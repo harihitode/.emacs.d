@@ -1,0 +1,28 @@
+;; RET between pairs
+(require 'skeleton)
+
+(defun autopairs-ret (arg)
+  (interactive "P")
+  (let (pair)
+    (dolist (pair skeleton-pair-alist)
+      (when (eq (char-after) (car (last pair)))
+        (save-excursion (newline-and-indent))))
+    (newline arg)
+    (indent-according-to-mode)))
+
+;; key bindings
+(keyboard-translate ?\C-h ?\C-?)
+(global-set-key (kbd "C-h") nil)
+(global-set-key (kbd "C-m") #'newline-and-indent)
+(global-set-key (kbd "C-o") #'other-window)
+(global-set-key (kbd "C-r") #'replace-string)
+(global-set-key (kbd "C-u") #'undo)
+(global-set-key (kbd "C-x g") #'magit-status)
+(global-set-key (kbd "C-t") nil)
+(global-set-key (kbd "M-p") nil)
+(global-set-key (kbd "M-/") #'comment-line)
+(global-set-key (kbd "RET") #'autopairs-ret)
+(global-set-key (kbd "C-y") (lambda ()
+                              (interactive)
+                              (yank)
+                              (indent-region (region-beginning) (region-end))))
