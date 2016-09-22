@@ -10,3 +10,6 @@ auto-save-list
 tramp
 
 /backup/
+/auto-save-list/
+
+.DS_Store
