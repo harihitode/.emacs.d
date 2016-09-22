@@ -11,5 +11,9 @@ tramp
 
 /backup/
 /auto-save-list/
+/elpa/
+/eshell/
+
+ac-comphist.dat
 
 .DS_Store
