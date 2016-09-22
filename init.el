@@ -11,10 +11,7 @@
 (defun add-to-load-path (&rest paths)
   (dolist (path paths)
     (let ((dirname (expand-file-name (concat user-emacs-directory path))))
-      (message (format "%s, " dirname))
-      (add-to-list 'load-path dirname)
-      (if (fboundp 'normal-top-level-add-subdirs-to-load-path)
-          (normal-top-level-add-subdirs-to-load-path)))))
+      (add-to-list 'load-path dirname))))
 
 (add-to-load-path "elisp" "conf")
 
