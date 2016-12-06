@@ -2,6 +2,7 @@
 (require 'gnus)
 (require 'nnimap)
 (require 'smtpmail)
+(require 'bbdb)
 
 (setq read-mail-command 'gnus
       mail-user-agent 'gnus-user-agent)
@@ -48,3 +49,13 @@
   (with-current-buffer smtpmail-text-buffer (change-smtp)))
 
 (ad-activate 'smtpmail-via-smtp)
+
+;; address settings
+(setq bbdb/news-auto-create-p t)
+(bbdb-initialize 'gnus 'message)
+(add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+(add-hook 'message-setup-hook 'bbdb-insinuate-message)
+(setq bbdb/news-auto-create-p 'bbdb-ignore-most-messages-hook)
+(setq bbdb-send-mail-style 'compose-mail)
+(setq bbdb-always-add-addresses t)
+(setq bbdb-use-pop-up t)
