@@ -147,8 +147,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (evil ejacs go-mode tabbar elscreen magit tuareg web-mode twittering-mode paredit bbdb auto-complete)))
- '(send-mail-function (quote smtpmail-send-it)))
+    (evil ejacs go-mode tabbar elscreen magit tuareg web-mode twittering-mode paredit bbdb auto-complete))))
 
 ;; web-mode
 (package-install-with-refresh 'web-mode)
@@ -160,3 +159,9 @@
 ;; magit
 (package-install-with-refresh 'magit)
 (require 'magit)
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
