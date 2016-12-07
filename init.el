@@ -60,20 +60,21 @@
 (add-hook 'after-init-hook (lambda () (eshell)))
 
 ;; PATH configuration
-(dolist (dir (list
-              "/sbin"
-              "/usr/sbin"
-              "/bin"
-              "/usr/bin"
-              "/opt/local/bin"
-              "/sw/bin"
-              "/usr/local/bin"
-              "/usr/local/texlive/2013/bin/x86_64-darwin/"
-              (expand-file-name "~/bin")
-              (expand-file-name "~/.emacs.d/bin")))
-  (when (and (file-exists-p dir) (not (member dir exec-path)))
-    (setenv "PATH" (concat dir ":" (getenv "PATH")))
-    (setq exec-path (append (list dir) exec-path))))
+(when (equal system-type 'darwin)
+  (dolist (dir (list
+                "/sbin"
+                "/usr/sbin"
+                "/bin"
+                "/usr/bin"
+                "/opt/local/bin"
+                "/sw/bin"
+                "/usr/local/bin"
+                "/usr/local/texlive/2013/bin/x86_64-darwin/"
+                (expand-file-name "~/bin")
+                (expand-file-name "~/.emacs.d/bin")))
+    (when (and (file-exists-p dir) (not (member dir exec-path)))
+      (setenv "PATH" (concat dir ":" (getenv "PATH")))
+      (setq exec-path (append (list dir) exec-path)))))
 
 ;;Backup file ~
 (setq backup-directory-alist
@@ -159,9 +160,94 @@
 ;; magit
 (package-install-with-refresh 'magit)
 (require 'magit)
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+
+;; TeX spel check
+(setq-default ispell-program-name "aspell")
+
+;; go-mode
+(package-install-with-refresh 'go-mode)
+(require 'go-mode)
+
+(defun my-packages-init ()
+  ;; why...
+  (add-to-load-path "elisp" "conf")
+  ;; markdown mode
+  (require 'markdown-mode)
+  (add-to-list 'auto-mode-alist '("\\.markdown" . markdown-mode))
+
+  ;; markdown for org (GitHub Flaver)
+  (require 'ox-gfm))
+
+(add-hook 'after-init-hook 'my-packages-init)
+
+;; latex
+(require 'org)
+(require 'ox-latex)
+
+
+(when (equal system-type 'darwin)
+  (setq org-latex-pdf-process
+        '("/usr/local/texlive/2016basic/bin/x86_64-darwin/latex %f"
+          "/usr/local/texlive/2016basic/bin/x86_64-darwin/latex %f"
+          "/usr/local/texlive/2016basic/bin/x86_64-darwin/dvipdfmx %b"
+          "/usr/local/texlive/2016basic/bin/x86_64-darwin/dvipdfmx %b")))
+
+
+(make-face 'emphasis-face-red)
+(set-face-foreground 'emphasis-face-red "red")
+(font-lock-add-keywords 'org-mode
+                        '(
+                          ("\\\\begin{.*}" . 'emphasis-face-red)
+                          ("\\\\end{.*}" . 'emphasis-face-red)
+                          ))
+
+(setq org-latex-with-hyperref nil)
+
+(add-to-list 'org-latex-classes
+             '("report"
+               "\\documentclass[11pt,a4paper]{jsarticle}
+[NO-PACKAGES]
+[NO-DEFAULT-PACKAGES]
+\\usepackage[dvipdfmx]{graphicx}
+\\usepackage{amsmath,amssymb}
+\\usepackage{bm}
+\\usepackage[compact]{titlesec}
+\\usepackage{url}
+\\makeatletter
+\\renewcommand\\maketitle[0]{
+\\begin{center}
+氏名 : \\@author
+\\end{center}
+}
+\\makeatother
+\\setlength{\\textwidth}{\\fullwidth}
+\\setlength{\\textheight}{\\textheight}
+\\addtolength{\\textheight}{40\\baselineskip}
+\\setlength{\\voffset}{-0.2in}
+\\setlength{\\topmargin}{0pt}
+\\setlength{\\headheight}{0pt}
+\\setlength{\\headsep}{0pt}
+"))
+
+(add-to-list 'org-latex-classes '("normal" "
+\\documentclass[11pt,a4paper]{article}
+[NO-PACKAGES]
+[NO-DEFAULT-PACKAGES]
+\\usepackage[dvipdfmx]{graphicx}
+\\usepackage{amsmath,amssymb}
+\\usepackage{bm}
+\\usepackage{ulem}
+\\usepackage{url}
+\\usepackage{geometry}
+\\geometry{left=25mm,right=25mm,top=30mm,bottom=30mm}
+\\makeatletter
+\\renewcommand\\maketitle[0]{
+\\begin{center}
+{\\bf \\@title}
+\\end{center}
+\\rightline{
+\\today
+}
+}
+\\makeatother
+"))

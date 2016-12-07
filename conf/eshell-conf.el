@@ -18,7 +18,18 @@
 
 ;; PATH setting
 (require 'em-alias)
-(add-to-list 'exec-path "/usr/local/bin")
+(when (equal system-type 'darwin)
+  (add-to-list 'exec-path "/usr/local/bin")
+  (add-to-list 'exec-path "/usr/local/texlive/2016basic/bin/x86_64-darwin"))
+
+(defun eshell-mode-hook-func () ;; hook
+  (dolist (path exec-path)
+    (let ((newpath (concat path ":")))
+      (setq eshell-path-env (concat newpath eshell-path-env))
+      (setenv "PATH" (concat newpath (getenv "PATH"))))))
+(add-hook 'eshell-mode-hook 'eshell-mode-hook-func)
+
+(setq eshell-path-env exec-path)
 (mapc (lambda (alias) (add-to-list 'eshell-command-aliases-list alias))
       `(("ll" "ls -ltr")
         ("la" "ls -a")
