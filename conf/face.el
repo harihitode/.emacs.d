@@ -50,4 +50,4 @@
 )
 
 ;; Mode Line Setting
-(setq-default mode-line-format (list "$ %b (L%l, C%c) <%m>"))
+(setq-default mode-line-format (list "%b %3l行:%3c列 も〜ど: %m"))
