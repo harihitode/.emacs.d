@@ -161,6 +161,9 @@
 (package-install-with-refresh 'magit)
 (require 'magit)
 
+;; BBDB
+(package-install-with-refresh 'bbdb)
+
 ;; TeX spel check
 (setq-default ispell-program-name "aspell")
 
