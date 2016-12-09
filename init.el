@@ -60,6 +60,7 @@
 (add-hook 'after-init-hook (lambda () (eshell)))
 
 ;; PATH configuration
+;; for mac
 (when (equal system-type 'darwin)
   (dolist (dir (list
                 "/sbin"
@@ -76,7 +77,9 @@
       (setenv "PATH" (concat dir ":" (getenv "PATH")))
       (setq exec-path (append (list dir) exec-path)))))
 
-;;Backup file ~
+;; for windows
+(setq exec-path (add-to-list 'exec-path "c:/Program Files (x86)/OpenSSH-Win64"))
+
 (setq backup-directory-alist
       (cons (cons "\\.*$" (expand-file-name "~/.emacs.d/backup"))
             backup-directory-alist))
@@ -163,6 +166,8 @@
 
 ;; BBDB
 (package-install-with-refresh 'bbdb)
+;; configure gnus-settings which use bbdb
+(load "gnus-conf")
 
 ;; TeX spel check
 (setq-default ispell-program-name "aspell")
@@ -186,7 +191,6 @@
 ;; latex
 (require 'org)
 (require 'ox-latex)
-
 
 (when (equal system-type 'darwin)
   (setq org-latex-pdf-process
