@@ -178,13 +178,7 @@
 
 (defun my-packages-init ()
   ;; why...
-  (add-to-load-path "elisp" "conf")
-  ;; markdown mode
-  (require 'markdown-mode)
-  (add-to-list 'auto-mode-alist '("\\.markdown" . markdown-mode))
-
-  ;; markdown for org (GitHub Flaver)
-  (require 'ox-gfm))
+  (add-to-load-path "elisp" "conf"))
 
 (add-hook 'after-init-hook 'my-packages-init)
 
