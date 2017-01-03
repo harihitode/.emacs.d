@@ -30,8 +30,8 @@
         (t
          (message (format "plain %s:%s" server port)))))
 
-(defun change-smtp ()
-  "Change the SMTP server according to the current \"From:\""
+;; Set the smtp server when sending messages
+(defun message-send-around (f &rest args)
   (save-excursion
     (cl-loop with
              from = (save-restriction
@@ -39,16 +39,12 @@
                            (message-fetch-field "from"))
              for (authmech address server port) in smtp-accounts
              when (string-match (format "%s <%s>" user-full-name address) from)
-             do (cl-return (apply 'set-smtp (list authmech server port)))
-             finally (error  (format "Cannot infer SMTP information. %s" from)))))
+             do (cl-return (progn
+                             (apply 'set-smtp (list authmech server port))
+                             (apply f args)))
+             finally (error  (format "Cannot infe SMTP information. %s" from)))))
 
-;; ad-hoc change account
-(defadvice smtpmail-via-smtp
-    (before smtpmail-via-smtp-ad-change-smtp (recipient smtpmail-text-buffer))
-  "Call `change-smtp' before every `smtpmail-via-smtp'."
-  (with-current-buffer smtpmail-text-buffer (change-smtp)))
-
-(ad-activate 'smtpmail-via-smtp)
+(advice-add #'message-send :around #'message-send-around)
 
 ;; address settings
 (setq bbdb/news-auto-create-p t)
