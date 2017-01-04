@@ -154,7 +154,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (evil ejacs go-mode tabbar elscreen magit tuareg web-mode twittering-mode paredit bbdb auto-complete))))
+    (alert evil ejacs go-mode tabbar elscreen magit tuareg web-mode twittering-mode paredit bbdb auto-complete))))
 
 ;; web-mode
 (package-install-with-refresh 'web-mode)
@@ -166,6 +166,13 @@
 ;; magit
 (package-install-with-refresh 'magit)
 (require 'magit)
+
+;; alert
+(package-install-with-refresh 'alert)
+(require 'alert)
+(setq alert-default-style 'toaster)
+;; if there is no png file, toast notification does not worv
+(setq alert-toaster-default-icon "~/.emacs.d/emacs.png")
 
 ;; BBDB
 (package-install-with-refresh 'bbdb)
@@ -255,3 +262,9 @@
 }
 \\makeatother
 "))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
