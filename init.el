@@ -22,6 +22,9 @@
 (load "eww-conf")
 (load "package-conf")
 
+;; move home directory
+(cd "~/")
+
 ;; linum
 (global-linum-mode t)
 
