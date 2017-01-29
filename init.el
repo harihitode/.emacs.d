@@ -21,6 +21,7 @@
 (load "eshell-conf")
 (load "eww-conf")
 (load "package-conf")
+(load "gnus-conf")
 
 ;; move home directory
 (cd "~/")
