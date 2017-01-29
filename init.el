@@ -155,7 +155,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (alert evil ejacs go-mode tabbar elscreen magit tuareg web-mode twittering-mode paredit bbdb auto-complete))))
+    (org-caldav alert magit web-mode twittering-mode paredit bbdb auto-complete))))
 
 ;; web-mode
 (package-install-with-refresh 'web-mode)
