@@ -21,6 +21,7 @@
 (load "eshell-conf")
 (load "eww-conf")
 (load "package-conf")
+(load "gnus-conf")
 
 ;; move home directory
 (cd "~/")
@@ -154,7 +155,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (alert evil ejacs go-mode tabbar elscreen magit tuareg web-mode twittering-mode paredit bbdb auto-complete))))
+    (org-caldav alert magit web-mode twittering-mode paredit bbdb auto-complete))))
 
 ;; web-mode
 (package-install-with-refresh 'web-mode)
@@ -191,6 +192,25 @@
   (add-to-load-path "elisp" "conf"))
 
 (add-hook 'after-init-hook 'my-packages-init)
+
+;; org-caldav
+(package-install-with-refresh 'org-caldav)
+(require 'org-caldav)
+(setq tls-checktrust 'ask)
+(setq org-caldav-url  "https://kanaria.harihitode.site/remote.php/dav/calendars/hitode")
+(setq org-caldav-calendar-id "personal")
+(setq org-caldav-inbox "~/.emacs.d/cal_inbox.org")
+(setq org-caldav-files '("~/.emacs.d/cal_inbox.org"))
+(setq org-agenda-files '("~/.emacs.d/cal_inbox.org"))
+(setq org-default-priority 68) ; make default priority the lowest
+(setq org-icalendar-include-todo t
+      org-icalendar-use-deadline '(event-if-todo event-if-not-todo todo-due)
+      org-icalendar-use-scheduled '(event-if-todo event-if-not-todo todo-start)
+      org-icalendar-with-timestamps t)
+
+;; calfw
+(package-install-with-refresh 'calfw)
+(require 'calfw-org)
 
 ;; latex
 (require 'org)

@@ -16,6 +16,10 @@
 (setq read-mail-command 'gnus
       mail-user-agent 'gnus-user-agent)
 
+;; encrypted mail
+(setq mm-encrypt-option 'guided)
+(setq mm-sign-option 'guided)
+
 ;; IMAP settings
 (setq gnus-select-method
       '(nnimap "gmail"
