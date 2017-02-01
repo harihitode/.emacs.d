@@ -26,3 +26,6 @@
                               (interactive)
                               (yank)
                               (indent-region (region-beginning) (region-end))))
+(global-set-key (kbd "C-c ;") #'cfw:open-org-calendar)
+(global-set-key (kbd "C-c :") #'org-caldav-sync)
+(global-set-key (kbd "C-c g") #'gnus)
