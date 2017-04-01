@@ -155,7 +155,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (org-caldav alert magit web-mode twittering-mode paredit bbdb auto-complete))))
+    (calfw org-caldav alert magit web-mode twittering-mode paredit bbdb auto-complete))))
 
 ;; web-mode
 (package-install-with-refresh 'web-mode)

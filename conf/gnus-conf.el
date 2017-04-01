@@ -4,6 +4,15 @@
 (require 'smtpmail)
 (require 'bbdb)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;MEMO;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;; Format of `smtp-accounts'
+;; (`protocol' `e-mail' `server' `port')
+;;
+;; User defined key (Actually, I want to use BBDB ...)
+;; `user-mail-address'
+;; `user-full-name'
+
 (setq read-mail-command 'gnus
       mail-user-agent 'gnus-user-agent)
 
@@ -25,7 +34,7 @@
       message.default-mail-headers "Cc: \nBcc:\n")
 
 (defun set-smtp (authmech server port)
-  "Set SMTP variables"
+  "Set the proper protocol, server and port for sending mail"
   (setq smtpmail-smtp-server server
         smtpmail-smtp-service port)
   (cond ((eql authmech 'starttls)
@@ -38,8 +47,8 @@
          (setq smtpmail-stream-type 'plain)
          (message (format "plain %s:%s" server port)))))
 
-;; Set the smtp server when sending messages
 (defun message-send-around (f &rest args)
+  "Set the smtp server when sending messages"
   (save-excursion
     (cl-loop with
              from = (save-restriction
