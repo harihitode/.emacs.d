@@ -28,10 +28,14 @@
   "Set SMTP variables"
   (setq smtpmail-smtp-server server
         smtpmail-smtp-service port)
-  (cond ((eql authmech 'ssl)
-         (setq smtpmail-starttls-credentials '((server port nil nil)))
+  (cond ((eql authmech 'starttls)
+         (setq smtpmail-stream-type 'startssl)
+         (message (format "startssl %s:%s" server port)))
+        ((eql authmech 'ssl)
+         (setq smtpmail-stream-type 'ssl)
          (message (format "ssl %s:%s" server port)))
         (t
+         (setq smtpmail-stream-type 'plain)
          (message (format "plain %s:%s" server port)))))
 
 ;; Set the smtp server when sending messages
