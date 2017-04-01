@@ -236,7 +236,7 @@
 
 (add-to-list 'org-latex-classes
              '("report"
-               "\\documentclass[11pt,a4paper]{jsarticle}
+               "\\documentclass[11pt,a4paper,uplatex]{jsarticle}
 [NO-PACKAGES]
 [NO-DEFAULT-PACKAGES]
 \\usepackage[dvipdfmx]{graphicx}
@@ -247,7 +247,7 @@
 \\makeatletter
 \\renewcommand\\maketitle[0]{
 \\begin{center}
-氏名 : \\@author
+\\@title
 \\end{center}
 }
 \\makeatother
