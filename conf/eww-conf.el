@@ -1,7 +1,7 @@
 ;; EWW settings
 (let* ((version (split-string emacs-version "\\."))
-       (major (string-to-int (car version)))
-       (minor (string-to-int (car (cdr version)))))
+       (major (string-to-number (car version)))
+       (minor (string-to-number (car (cdr version)))))
   (when (and (>= major 25))
     (require 'eww)
     (define-key eww-mode-map "c 0" 'eww-copy-page-url)
