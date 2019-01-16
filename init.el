@@ -183,10 +183,6 @@
 ;; TeX spel check
 (setq-default ispell-program-name "aspell")
 
-;; go-mode
-(package-install-with-refresh 'go-mode)
-(require 'go-mode)
-
 (defun my-packages-init ()
   ;; why...
   (add-to-load-path "elisp" "conf"))
@@ -207,10 +203,6 @@
       org-icalendar-use-deadline '(event-if-todo event-if-not-todo todo-due)
       org-icalendar-use-scheduled '(event-if-todo event-if-not-todo todo-start)
       org-icalendar-with-timestamps t)
-
-;; calfw
-(package-install-with-refresh 'calfw)
-(require 'calfw-org)
 
 ;; latex
 (require 'org)
