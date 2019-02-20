@@ -155,7 +155,7 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (calfw org-caldav alert magit web-mode twittering-mode paredit bbdb auto-complete))))
+    (calfw org-caldav alert magit web-mode twittering-mode paredit auto-complete))))
 
 ;; web-mode
 (package-install-with-refresh 'web-mode)
@@ -175,8 +175,6 @@
 ;; if there is no png file, toast notification does not worv
 (setq alert-toaster-default-icon "~/.emacs.d/emacs.png")
 
-;; BBDB
-(package-install-with-refresh 'bbdb)
 ;; configure gnus-settings which use bbdb
 (load "gnus-conf")
 

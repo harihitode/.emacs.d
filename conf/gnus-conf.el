@@ -2,8 +2,10 @@
 (require 'gnus)
 (require 'nnimap)
 (require 'smtpmail)
-(require 'bbdb)
 (require 'starttls)
+
+(package-install-with-refresh 'bbdb)
+(require 'bbdb)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;MEMO;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
