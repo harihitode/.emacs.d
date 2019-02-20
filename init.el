@@ -139,6 +139,8 @@
 (setq twittering-icon-mode t)
 (setq twittering-use-master-password t) ; need GnuPG
 (setq twittering-connection-type-order '(wget curl urllib-http native urllib-https))
+;;(setq twittering-allow-insecure-server-cert t)
+(setq twittering-cert-file "")
 (setq twittering-status-format "%i《%S(%s)》 %@\n『%t』")
 
 ;; paraedit
