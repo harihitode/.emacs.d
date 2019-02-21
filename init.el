@@ -138,9 +138,22 @@
 (require 'twittering-mode)
 (setq twittering-icon-mode t)
 (setq twittering-use-master-password t) ; need GnuPG
-(setq twittering-connection-type-order '(wget curl urllib-http native urllib-https))
-;;(setq twittering-allow-insecure-server-cert t)
-(setq twittering-cert-file "")
+(setq twittering-connection-type-order '(wget curl))
+
+(setq twittering-connection-type-table
+  '((wget
+     (check . twittering-start-http-session-wget-p)
+     (https . t)
+     (send-http-request . twittering-send-http-request-wget)
+     (pre-process-buffer . twittering-pre-process-buffer-wget))
+    (curl
+     (check . twittering-start-http-session-curl-p)
+     (https . twittering-start-http-session-curl-https-p)
+     (send-http-request . twittering-send-http-request-curl)
+     (pre-process-buffer . twittering-pre-process-buffer-curl))))
+
+(setq twittering-allow-insecure-server-cert t)
+(setq twittering-cert-file nil)
 (setq twittering-status-format "%i《%S(%s)》 %@\n『%t』")
 
 ;; paraedit
