@@ -178,6 +178,8 @@
    (quote
     (yaml-mode tuareg org-caldav alert magit web-mode twittering-mode paredit bbdb auto-complete))))
 
+(package-install-with-refresh 'yaml-mode)
+
 ;; web-mode
 (package-install-with-refresh 'web-mode)
 (require 'web-mode)
