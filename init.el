@@ -95,6 +95,11 @@
 (add-to-list 'auto-mode-alist '("\\.c?\\'"  . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.h?\\'"  . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.pzc?\\'" . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.cl?\\'" . c++-mode))
+
+;; web-mode
+(add-to-list 'auto-mode-alist '("\\.js?\\'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.ts?\\'" . web-mode))
 
 ;; cc-mode indent depth
 (setq-default my-indent 2)
@@ -171,11 +176,17 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (calfw org-caldav alert magit web-mode twittering-mode paredit auto-complete))))
+    (yaml-mode tuareg org-caldav alert magit web-mode twittering-mode paredit bbdb auto-complete))))
 
 ;; web-mode
 (package-install-with-refresh 'web-mode)
 (require 'web-mode)
+(defun my-web-mode-hook ()
+  "Hooks for Web mode."
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-code-indent-offset 2)
+  )
+(add-hook 'web-mode-hook  'my-web-mode-hook)
 (add-to-list 'auto-mode-alist '("\\.php?\\'"  . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.css?\\'"  . web-mode))
