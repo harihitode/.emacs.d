@@ -3,9 +3,7 @@
 ;; just comment it out by adding a semicolon to the start of the line.
 ;; You may delete these explanatory comments.
 (package-initialize)
-
 (require 'cl-lib)
-(require 'epg)
 
 ;; load-path config
 (defun add-to-load-path (&rest paths)
@@ -20,7 +18,6 @@
 (load "key-binds")
 (load "eshell-conf")
 (load "eww-conf")
-(load "package-conf")
 (load "gnus-conf")
 
 ;; move home directory
@@ -55,6 +52,7 @@
 ;; UTF-8 settings (making any sense?)
 (set-language-environment 'utf-8)
 (set-default-coding-systems 'utf-8)
+(set-buffer-file-coding-system 'utf-8-unix)
 (setq inhibit-startup-message t) ; disable startup-message
 
 ;; Hide advertisement from minibuffer
@@ -74,7 +72,6 @@
                 "/opt/local/bin"
                 "/sw/bin"
                 "/usr/local/bin"
-                "/usr/local/texlive/2013/bin/x86_64-darwin/"
                 (expand-file-name "~/bin")
                 (expand-file-name "~/.emacs.d/bin")))
     (when (and (file-exists-p dir) (not (member dir exec-path)))
@@ -93,6 +90,7 @@
 
 ;; only use c++ mode
 (add-to-list 'auto-mode-alist '("\\.c?\\'"  . c++-mode))
+(add-to-list 'auto-mode-alist '("\\.cl?\\'"  . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.h?\\'"  . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.pzc?\\'" . c++-mode))
 
@@ -117,7 +115,7 @@
       (setq vc-mode noback))))
 
 ;; gtags
-(package-install-with-refresh 'gtags)
+(package-install 'gtags)
 (require 'gtags)
 (setq gtags-mode-hook
       '(lambda ()
@@ -126,15 +124,9 @@
          (local-set-key "\M-s" 'gtags-find-symbol)
          (local-set-key "\C-t" 'gtags-pop-stack)))
 
-;; Auto-Complete
-(package-install-with-refresh 'auto-complete)
-(require 'auto-complete)
-(require 'auto-complete-config)
-(global-auto-complete-mode t)
-(ac-config-default)
-
 ;; twittering-mode
-(package-install-with-refresh 'twittering-mode)
+(require 'epg)
+(package-install 'twittering-mode)
 (require 'twittering-mode)
 (setq twittering-icon-mode t)
 (setq twittering-use-master-password t) ; need GnuPG
@@ -157,7 +149,7 @@
 (setq twittering-status-format "%i《%S(%s)》 %@\n『%t』")
 
 ;; paraedit
-(package-install-with-refresh 'paredit)
+(package-install 'paredit)
 (require 'paredit)
 (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
 (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
@@ -171,21 +163,17 @@
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (calfw org-caldav alert magit web-mode twittering-mode paredit auto-complete))))
+    (calfw org-caldav alert web-mode twittering-mode paredit))))
 
 ;; web-mode
-(package-install-with-refresh 'web-mode)
+(package-install 'web-mode)
 (require 'web-mode)
 (add-to-list 'auto-mode-alist '("\\.php?\\'"  . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.css?\\'"  . web-mode))
 
-;; magit
-(package-install-with-refresh 'magit)
-(require 'magit)
-
 ;; alert
-(package-install-with-refresh 'alert)
+(package-install 'alert)
 (require 'alert)
 (setq alert-default-style 'toaster)
 ;; if there is no png file, toast notification does not worv
@@ -204,10 +192,10 @@
 (add-hook 'after-init-hook 'my-packages-init)
 
 ;; org-caldav
-(package-install-with-refresh 'org-caldav)
+(package-install 'org-caldav)
 (require 'org-caldav)
 (setq tls-checktrust 'ask)
-(setq org-caldav-url  "https://kanaria.harihitode.site/remote.php/dav/calendars/hitode")
+(setq org-caldav-url  "https://example.example/remote.php/dav/calendars/user_id")
 (setq org-caldav-calendar-id "personal")
 (setq org-caldav-inbox "~/.emacs.d/cal_inbox.org")
 (setq org-caldav-files '("~/.emacs.d/cal_inbox.org"))
