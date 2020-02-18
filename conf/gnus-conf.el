@@ -4,7 +4,7 @@
 (require 'smtpmail)
 (require 'starttls)
 
-(package-install-with-refresh 'bbdb)
+(package-install 'bbdb)
 (require 'bbdb)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;MEMO;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
