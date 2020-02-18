@@ -180,6 +180,11 @@
    (quote
     (tuareg org-caldav alert web-mode twittering-mode paredit bbdb))))
 
+;; magit
+(package-install 'magit)
+(require 'magit)
+(global-set-key (kbd "C-x g") 'magit-status)
+
 ;; web-mode
 (package-install 'web-mode)
 (require 'web-mode)
