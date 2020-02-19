@@ -7,7 +7,7 @@
 
 ;;; Code:
 (require 'package)
-(add-to-list 'package-archives '("melpa-stable" . "https://stable.melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-refresh-contents)
 (package-initialize)
 (package-install 'use-package)
@@ -130,14 +130,12 @@
       (setq vc-mode noback))))
 
 ;; gtags
-(package-install 'gtags)
-(require 'gtags)
-(setq gtags-mode-hook
-      '(lambda ()
-         (local-set-key "\M-t" 'gtags-find-tag)
-         (local-set-key "\M-r" 'gtags-find-rtag)
-         (local-set-key "\M-s" 'gtags-find-symbol)
-         (local-set-key "\C-t" 'gtags-pop-stack)))
+(package-install 'ggtags)
+(require 'ggtags)
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (when (derived-mode-p 'c-mode 'c++-mode)
+              (ggtags-mode 1))))
 
 ;; twittering-mode
 (require 'epg)
@@ -177,8 +175,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   (quote
-    (tuareg org-caldav alert web-mode twittering-mode paredit bbdb))))
+   '(company-quickhelp company flycheck company-lsp lsp-ui lsp-mode company-flx magit tuareg org-caldav alert web-mode twittering-mode paredit bbdb)))
 
 ;; magit
 (package-install 'magit)
@@ -349,10 +346,8 @@
         lsp-auto-guess-root t
         lsp-enable-completion-at-point t
         lsp-enable-xref t
-        lsp-prefer-flymake nil
-        lsp-use-native-json t
         lsp-enable-indentation t
-        lsp-response-timeout 10
+        lsp-response-timeout 5
         lsp-restart 'auto-restart
         lsp-keep-workspace-alive t
         lsp-eldoc-render-all nil
@@ -380,7 +375,7 @@
     :hook
     ((lsp-mode . lsp-ui-mode)
      (lsp-after-open . (lambda ()
-                         (lsp-ui-flycheck-enable t)
+                         (lsp-flycheck-enable t)
                          (lsp-ui-sideline-enable t)
                          (lsp-ui-imenu-enable t)
                          (lsp-lens-mode t)
@@ -417,3 +412,6 @@
                           (lsp)
                           (flycheck-mode t)
                           (add-to-list 'lsp-language-id-configuration '(verilog-mode . "verilog")))))
+
+(provide 'init)
+;;; init.el
