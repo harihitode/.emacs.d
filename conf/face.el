@@ -29,6 +29,7 @@
                     (set-frame-parameter nil 'alpha 95)
                     (tool-bar-mode 0) ; toolbar (upper) disable
                     (scroll-bar-mode 0) ; scrollbar disable
+                    (horizontal-scroll-bar-mode 0) ; also horizontal one
                     (global-set-key (kbd "C-z") #'eshell)
                     (load-theme 'tango-dark t)
                     (set-face-attribute 'mode-line nil
@@ -37,7 +38,6 @@
                                         :background "#65ace4"
                                         :overline nil
                                         :underline nil)
-
                     (set-face-attribute 'mode-line-inactive nil
                                         :box nil
                                         :foreground "grey30"
@@ -50,4 +50,4 @@
 )
 
 ;; Mode Line Setting
-(setq-default mode-line-format (list "%b %3l行:%3c列 も〜ど: %m"))
+(setq-default mode-line-format (list "%b %3l行:%3c列 も~ど: %m"))
