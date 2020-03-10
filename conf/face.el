@@ -1,5 +1,9 @@
-;; Look & Feel
-;; whitespace
+;;; package --- Summary
+;;; Commentary:
+;;; Look & Feel
+;;; whitespace check
+
+;;; Code:
 (require 'whitespace)
 (setq whitespace-style '(face
                          trailing
@@ -8,7 +12,7 @@
                          space-mark
                          tab-mark
                          ))
-;; color
+;;; colors to check the white space (always it's a gomi)
 (let ((bg-color nil))
   (set-face-attribute 'whitespace-trailing nil
                       :background bg-color
@@ -24,14 +28,14 @@
   (set-face-attribute 'whitespace-empty nil
                       :background bg-color))
 
-;; Appearance
+;;; appearance: remove unnecessary junks
 (if window-system (progn
-                    (set-frame-parameter nil 'alpha 95)
+                    (set-frame-parameter nil 'alpha 90)
                     (tool-bar-mode 0) ; toolbar (upper) disable
                     (scroll-bar-mode 0) ; scrollbar disable
                     (horizontal-scroll-bar-mode 0) ; also horizontal one
                     (global-set-key (kbd "C-z") #'eshell)
-                    (load-theme 'tango-dark t)
+                    (load-theme 'tange-dark t)
                     (set-face-attribute 'mode-line nil
                                         :box nil ; disable 3d effect
                                         :foreground "black"
@@ -45,9 +49,8 @@
                                         :overline nil
                                         :underline nil)))
 (menu-bar-mode 0)
-(when (eq window-system 'ns)
-  ;; for Cocoa
-)
+;;; Mode Line Setting
+(setq-default mode-line-format (list "%b %3l行:%3c列 も〜ど: %m"))
 
-;; Mode Line Setting
-(setq-default mode-line-format (list "%b %3l行:%3c列 も~ど: %m"))
+(provide 'face)
+;;; face.el ends here
