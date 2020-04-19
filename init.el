@@ -32,14 +32,26 @@
 ;; move home directory
 (cd "~/")
 
+;; save current buffers for emacs restart
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(desktop-dirname "~/.emacs.d" t)
+ '(desktop-path (list "~/.emacs.d/"))
+ '(desktop-restore-frames nil)
+ '(desktop-save t)
+ '(package-selected-packages
+   (quote
+    (company-quickhelp company flycheck company-lsp lsp-ui lsp-mode company-flx magit tuareg org-caldav alert web-mode twittering-mode paredit bbdb))))
+(desktop-save-mode 1)
+
 ;; linum
 (global-linum-mode t)
 
 ;; pare completion
 (electric-pair-mode 1)
-
-;; save current buffers for emacs restart
-(desktop-save-mode 1)
 
 ;; remove whitespace
 (add-hook 'before-save-hook 'whitespace-cleanup)
@@ -53,10 +65,6 @@
 
 ;; bell disable
 (setq ring-bell-function #'ignore)
-
-;; for Cocoa Emacs
-(setq mac-command-key-is-meta t)
-(setq mac-command-modifier 'meta)
 
 ;; UTF-8 settings (making any sense?)
 (set-language-environment 'utf-8)
@@ -169,13 +177,7 @@
 (add-hook 'lisp-mode-hook 'enable-paredit-mode)
 (add-hook 'ielm-mode-hook 'enable-paredit-mode)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   '(company-quickhelp company flycheck company-lsp lsp-ui lsp-mode company-flx magit tuareg org-caldav alert web-mode twittering-mode paredit bbdb)))
+
 
 ;; magit
 (package-install 'magit)
