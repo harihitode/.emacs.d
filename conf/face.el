@@ -35,7 +35,6 @@
                     (scroll-bar-mode 0) ; scrollbar disable
                     (horizontal-scroll-bar-mode 0) ; also horizontal one
                     (global-set-key (kbd "C-z") #'eshell)
-                    (load-theme 'tange-dark t)
                     (set-face-attribute 'mode-line nil
                                         :box nil ; disable 3d effect
                                         :foreground "black"
