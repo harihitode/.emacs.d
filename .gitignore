@@ -13,6 +13,7 @@ tramp
 /auto-save-list/
 /elpa/
 /eshell/
+/transient
 
 ac-comphist.dat
 
