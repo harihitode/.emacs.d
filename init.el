@@ -44,7 +44,7 @@
  '(desktop-save t)
  '(package-selected-packages
    (quote
-    (company-quickhelp company flycheck company-lsp lsp-ui lsp-mode company-flx magit tuareg org-caldav alert web-mode twittering-mode paredit bbdb))))
+    (ggtags company-quickhelp company flycheck company-lsp lsp-ui lsp-mode company-flx magit tuareg org-caldav alert web-mode twittering-mode paredit bbdb))))
 (desktop-save-mode 1)
 
 ;; linum
