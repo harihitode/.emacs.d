@@ -106,6 +106,7 @@
 (transient-mark-mode 1)
 
 ;; only use c++ mode
+(add-to-list 'auto-mode-alist '("\\rc?\\'"  . sh-mode))
 (add-to-list 'auto-mode-alist '("\\.c?\\'"  . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.cl?\\'"  . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.h?\\'"  . c++-mode))
