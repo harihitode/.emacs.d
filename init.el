@@ -12,15 +12,15 @@
 (package-initialize)
 (package-install 'use-package)
 
-(require 'cl-lib)
-
 ;; load-path config
 (defun add-to-load-path (&rest paths)
+  "Add each directory in PATHS to load path from which Emacs Lisps are loading."
   (dolist (path paths)
     (let ((dirname (expand-file-name (concat user-emacs-directory path))))
       (add-to-list 'load-path dirname))))
 
-(add-to-load-path "elisp" "conf")
+(add-to-load-path "elisp" "conf" "verilog-mode")
+(add-hook 'after-init-hook (lambda () (add-to-load-path "elisp" "conf" "verilog-mode")))
 
 ;; load configuration file
 (load "face")
@@ -43,25 +43,40 @@
  '(desktop-restore-frames nil)
  '(desktop-save t)
  '(package-selected-packages
-   (quote
-    (ggtags company-quickhelp company flycheck company-lsp lsp-ui lsp-mode company-flx magit tuareg org-caldav alert web-mode twittering-mode paredit bbdb))))
-(desktop-save-mode 1)
+   '(ggtags company-quickhelp company flycheck company-lsp lsp-ui lsp-mode company-flx magit tuareg org-caldav alert web-mode twittering-mode paredit bbdb))
+ '(verilog-align-ifelse t)
+ '(verilog-auto-arg-format 'single)
+ '(verilog-auto-arg-sort t)
+ '(verilog-auto-delete-trailing-whitespace t)
+ '(verilog-auto-inst-param-value t)
+ '(verilog-auto-inst-vector nil)
+ '(verilog-auto-lineup 'all)
+ '(verilog-auto-newline nil)
+ '(verilog-auto-save-policy nil)
+ '(verilog-auto-template-warn-unused t)
+ '(verilog-case-fold t)
+ '(verilog-case-indent 2)
+ '(verilog-cexp-indent 2)
+ '(verilog-highlight-grouping-keywords t)
+ '(verilog-highlight-modules t)
+ '(verilog-indent-level 2)
+ '(verilog-indent-level-behavioral 2)
+ '(verilog-indent-level-declaration 2)
+ '(verilog-indent-level-module 2)
+ '(verilog-tab-to-comment nil)
+ '(verilog-typedef-regexp "_t$"))
 
 ;; linum
 (global-linum-mode t)
+
+;; saving emacs sessions
+(desktop-save-mode 1)
 
 ;; pare completion
 (electric-pair-mode 1)
 
 ;; remove whitespace
 (add-hook 'before-save-hook 'whitespace-cleanup)
-
-;; show white space
-(setq whitespace-display-mappings
-      '((tab-mark ?\t [?\u00BB ?\t] [?\\ ?\t])))
-
-(global-whitespace-mode 1)
-(setq-default tab-width 2 indent-tabs-mode nil)
 
 ;; bell disable
 (setq ring-bell-function #'ignore)
@@ -73,7 +88,8 @@
 (setq inhibit-startup-message t) ; disable startup-message
 
 ;; Hide advertisement from minibuffer
-(defun display-startup-echo-area-message () (message ""))
+(defun display-startup-echo-area-message ()
+  "Hide default minibuffer message." (message ""))
 
 ;; Disable the default page and run eshell
 (add-hook 'after-init-hook (lambda () (eshell)))
@@ -97,6 +113,7 @@
 
 ;; for windows
 (setq exec-path (add-to-list 'exec-path "c:/Program Files (x86)/OpenSSH-Win64"))
+(setq exec-path (add-to-list 'exec-path "c:/Program Files/Git/bin"))
 
 (setq backup-directory-alist
       (cons (cons "\\.*$" (expand-file-name "~/.emacs.d/backup"))
@@ -118,25 +135,17 @@
 (add-to-list 'auto-mode-alist '("\\.js?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.ts?\\'" . web-mode))
 
-;; cc-mode indent depth
-(setq-default my-indent 2)
-(add-hook 'c-mode-hook (lambda () (setq c-basic-offset my-indent)))
-(add-hook 'c++-mode-hook (lambda () (setq c-basic-offset my-indent)))
+;; tab & indent
+(setq-default tab-width 2 indent-tabs-mode nil)
+(add-hook 'c-mode-hook (lambda () (setq-default c-basic-offset tab-width)))
+(add-hook 'c++-mode-hook (lambda () (setq-default c-basic-offset tab-width)))
 
-;; toggle emacs
-(defun my-indent-toggle ()
+;; toggle tab width
+(defun toggle-tab-width ()
+  "Set the tab width 2 or 4."
   (interactive)
-  (if (equal my-indent 4) (setq my-indent 2)
-    (setq my-indent 4))
-  (princ (format "toggle to %d" my-indent)))
-
-;; VC-mode
-(defadvice vc-mode-line (after strip-backend () activate)
-  (when (stringp vc-mode)
-    (let ((noback (replace-regexp-in-string
-                   (format "^ %s" (vc-backend buffer-file-name))
-                   " " vc-mode)))
-      (setq vc-mode noback))))
+  (setq tab-width (if (equal tab-width 2) 4 2))
+  (princ (format "toggle to %d" tab-width)))
 
 ;; gtags
 (package-install 'ggtags)
@@ -178,8 +187,6 @@
 (add-hook 'lisp-mode-hook 'enable-paredit-mode)
 (add-hook 'ielm-mode-hook 'enable-paredit-mode)
 
-
-
 ;; magit
 (package-install 'magit)
 (require 'magit)
@@ -188,12 +195,9 @@
 ;; web-mode
 (package-install 'web-mode)
 (require 'web-mode)
-(defun my-web-mode-hook ()
-  "Hooks for Web mode."
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-code-indent-offset 2)
-  )
-(add-hook 'web-mode-hook  'my-web-mode-hook)
+(add-hook 'web-mode-hook (lambda ()
+                           (setq web-mode-markup-indent-offset 2)
+                           (setq web-mode-code-indent-offset 2)))
 (add-to-list 'auto-mode-alist '("\\.php?\\'"  . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.css?\\'"  . web-mode))
@@ -211,16 +215,9 @@
 ;; TeX spel check
 (setq-default ispell-program-name "aspell")
 
-(defun my-packages-init ()
-  ;; why...
-  (add-to-load-path "elisp" "conf"))
-
-(add-hook 'after-init-hook 'my-packages-init)
-
 ;; org-caldav
 (package-install 'org-caldav)
 (require 'org-caldav)
-(setq tls-checktrust 'ask)
 (setq org-caldav-url  "https://example.example/remote.php/dav/calendars/user_id")
 (setq org-caldav-calendar-id "personal")
 (setq org-caldav-inbox "~/.emacs.d/cal_inbox.org")
@@ -252,7 +249,7 @@
                           ("\\\\end{.*}" . 'emphasis-face-red)
                           ))
 
-(setq org-latex-with-hyperref nil)
+(setq org-latex-hyperref-template nil)
 
 (add-to-list 'org-latex-classes
              '("report"
@@ -309,6 +306,8 @@
  ;; If there is more than one, they won't work right.
  )
 
+(require 'lsp)
+(require 'lsp-ui)
 (use-package flycheck
   :ensure t
   :defer t
@@ -347,10 +346,10 @@
   (setq lsp-log-io nil
         lsp-auto-configure t
         lsp-auto-guess-root t
-        lsp-enable-completion-at-point t
+        lsp-completion-enable t
         lsp-enable-xref t
         lsp-enable-indentation t
-        lsp-response-timeout 5
+        lsp-response-timeout 10
         lsp-restart 'auto-restart
         lsp-keep-workspace-alive t
         lsp-eldoc-render-all nil
@@ -378,7 +377,6 @@
     :hook
     ((lsp-mode . lsp-ui-mode)
      (lsp-after-open . (lambda ()
-                         (lsp-flycheck-enable t)
                          (lsp-ui-sideline-enable t)
                          (lsp-ui-imenu-enable t)
                          (lsp-lens-mode t)
@@ -417,4 +415,4 @@
                           (add-to-list 'lsp-language-id-configuration '(verilog-mode . "verilog")))))
 
 (provide 'init)
-;;; init.el
+;;; init.el ends here

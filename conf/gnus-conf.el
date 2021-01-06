@@ -1,8 +1,11 @@
+;;; package --- Summary
+;;; Commentary:
+;;; Code:
+
 (require 'cl-lib)
 (require 'gnus)
 (require 'nnimap)
 (require 'smtpmail)
-(require 'starttls)
 
 (package-install 'bbdb)
 (require 'bbdb)
@@ -16,13 +19,14 @@
 ;; `user-mail-address'
 ;; `user-full-name'
 
-(setq smtp-accounts
+(setq user-mail-address "your_mail")
+(setq user-full-name "your_name")
+
+(defvar user-smtp-accounts)
+(setq user-smtp-accounts
       '((starttls "your_mail" "mail_server 1" 587)
         (starttls "another_your_mail" "mail_server 2" 587)
         (starttls "yet_another_your_mail" "mail_server 3" 587)))
-
-(setq user-mail-address "your_mail")
-(setq user-full-name "your_name")
 
 (setq read-mail-command 'gnus
       mail-user-agent 'gnus-user-agent)
@@ -39,20 +43,20 @@
                (nnimap-authinfo-file "~/.emacs.d/.authinfo")
                (nnimap-stream ssl)))
 
-;; SMTP settingsb
-(setq send-mail-function 'smtpmail-send-it
-      message-send-mail-function 'smtpmail-send-it
-      message.default-mail-headers "Cc: \nBcc:\n")
+;; SMTP settings
+(setq-default send-mail-function 'smtpmail-send-it
+              message-send-mail-function 'smtpmail-send-it
+              message.default-mail-headers "Cc: \nBcc:\n")
 
 (defun set-smtp (authmech server port)
-  "Set the proper protocol, server and port for sending mail"
-  (setq message-send-mail-function 'smtpmail-send-it
-        smtpmail-starttls-credentials '(("smtp.gmail.com" 25 nil nil))
-        smtpmail-auth-credentials '(("smtp.gmail.com" 25 "your_gmail@gmail.com" nil))
-        smtpmail-default-smtp-server server
-        smtpmail-smtp-server "smtp.gmail.com"
-        smtpmail-smtp-service 25
-        smtpmail-local-domain "localhost")
+  "Set the proper protocol from AUTHMECH, SERVER and PORT for sending mail."
+  (setq-default message-send-mail-function 'smtpmail-send-it
+                smtpmail-starttls-credentials '(("smtp.gmail.com" 25 nil nil))
+                smtpmail-auth-credentials '(("smtp.gmail.com" 25 "your_gmail@gmail.com" nil))
+                smtpmail-default-smtp-server server
+                smtpmail-smtp-server "smtp.gmail.com"
+                smtpmail-smtp-service 25
+                smtpmail-local-domain "localhost")
   (cond ((eql authmech 'starttls)
          (setq smtpmail-stream-type 'starttls)
          (message (format "starttls %s:%s" server port)))
@@ -63,29 +67,31 @@
          (setq smtpmail-stream-type 'plain)
          (message (format "plain %s:%s" server port)))))
 
-(defun message-send-around (f &rest args)
-  "Set the smtp server when sending messages"
+(defun message-send-around (func &rest args)
+  "Set the smtp server when sending message FUNC ARGS."
   (save-excursion
     (cl-loop with
              from = (save-restriction
                            (message-narrow-to-headers)
                            (message-fetch-field "from"))
-             for (authmech address server port) in smtp-accounts
+             for (authmech address server port) in user-smtp-accounts
              when (string-match (format "%s <%s>" user-full-name address) from)
              do (cl-return (progn
                              (apply 'set-smtp (list authmech server port))
-                             (apply f args)))
+                             (apply func args)))
              finally (error  (format "There is no SMTP information. %s" from)))))
 
 (advice-add #'message-send :around #'message-send-around)
 
 ;; address settings
-(setq bbdb/news-auto-create-p t)
+(setq-default bbdb/news-auto-create-p t)
 (bbdb-mail-aliases)
 (bbdb-initialize 'gnus 'message 'aliases)
 (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
 (add-hook 'message-setup-hook 'bbdb-insinuate-message)
-(setq bbdb/news-auto-create-p 'bbdb-ignore-most-messages-hook)
-(setq bbdb-send-mail-style 'compose-mail)
-(setq bbdb-always-add-addresses t)
-(setq bbdb-use-pop-up t)
+(setq-default bbdb/news-auto-create-p 'bbdb-ignore-most-messages-hook)
+(setq-default bbdb-send-mail-style 'compose-mail)
+(setq-default bbdb-always-add-addresses t)
+(setq-default bbdb-use-pop-up t)
+
+;;; gnus-conf.el ends here

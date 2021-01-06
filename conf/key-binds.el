@@ -1,16 +1,9 @@
-;; RET between pairs
-(require 'skeleton)
+;;; package --- Summary
+;;; Commentary:
+;;; setting key bindings
 
-(defun autopairs-ret (arg)
-  (interactive "P")
-  (let (pair)
-    (dolist (pair skeleton-pair-alist)
-      (when (eq (char-after) (car (last pair)))
-        (save-excursion (newline-and-indent))))
-    (newline arg)
-    (indent-according-to-mode)))
+;;; Code:
 
-;; key bindings
 (keyboard-translate ?\C-h ?\C-?)
 (global-set-key (kbd "C-h") nil)
 (global-set-key (kbd "C-m") #'newline-and-indent)
@@ -21,11 +14,12 @@
 (global-set-key (kbd "C-t") nil)
 (global-set-key (kbd "M-p") nil)
 (global-set-key (kbd "M-/") #'comment-line)
-(global-set-key (kbd "RET") #'autopairs-ret)
 (global-set-key (kbd "C-y") (lambda ()
                               (interactive)
                               (yank)
                               (indent-region (region-beginning) (region-end))))
-(global-set-key (kbd "C-c ;") #'cfw:open-org-calendar)
 (global-set-key (kbd "C-c :") #'org-caldav-sync)
 (global-set-key (kbd "C-c g") #'gnus)
+
+(provide 'key-binds)
+;;; key-binds.el ends here

@@ -2,8 +2,10 @@
 ;;; Commentary:
 ;;; Look & Feel
 ;;; whitespace check
+(load-theme 'tango-dark)
 
 ;;; Code:
+
 (require 'whitespace)
 (setq whitespace-style '(face
                          trailing
@@ -12,6 +14,11 @@
                          space-mark
                          tab-mark
                          ))
+;;; show white space
+(setq whitespace-display-mappings
+      '((tab-mark ?\t [?\u00BB ?\t] [?\\ ?\t])))
+(global-whitespace-mode 1)
+
 ;;; colors to check the white space (always it's a gomi)
 (let ((bg-color nil))
   (set-face-attribute 'whitespace-trailing nil
@@ -30,7 +37,7 @@
 
 ;;; appearance: remove unnecessary junks
 (if window-system (progn
-                    (set-frame-parameter nil 'alpha 90)
+                    (set-frame-parameter nil 'alpha 95)
                     (tool-bar-mode 0) ; toolbar (upper) disable
                     (scroll-bar-mode 0) ; scrollbar disable
                     (horizontal-scroll-bar-mode 0) ; also horizontal one

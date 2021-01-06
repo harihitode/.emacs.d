@@ -1,39 +1,45 @@
-;; EWW settings
-(let* ((version (split-string emacs-version "\\."))
-       (major (string-to-number (car version)))
-       (minor (string-to-number (car (cdr version)))))
-  (when (and (>= major 25))
-    (require 'eww)
-    (define-key eww-mode-map "c 0" 'eww-copy-page-url)
-    (define-key eww-mode-map "p" 'scroll-page-url)
-    (define-key eww-mode-map "n" 'scroll-up)
+;;; package --- Summary
+;;; Commentary:
+;;; EWW (text browser) settings
+;;; Code:
 
-    (defvar eww-disable-colorize t)
-    (defun shr-colorize-region--disable (orig start end fg &optional bg &rest _)
-      (unless eww-disable-colorize
-        (funcall orig start end fg)))
-    (advice-add 'shr-colorize-region :around 'shr-colorize-region--disable)
-    (advice-add 'eww-colorize-region :around 'shr-colorize-region--disable)
-    (defun eww-disable-color ()
-      (interactive)
-      (setq-local eww-disable-colorize t)
-      (eww-reload))
-    (defun eww-enable-color ()
-      (setq-local eww-disable-colorize nil)
-      (eww-reload))
+(require 'eww)
+(define-key eww-mode-map "c 0" 'eww-copy-page-url)
+(define-key eww-mode-map "p" 'scroll-page-url)
+(define-key eww-mode-map "n" 'scroll-up)
 
-    (defun eww-disable-images ()
-      (interactive)
-      (setq-local shr-put-image-function 'shr-put-image-alt)
-      (eww-reload))
-    (defun eww-enable-images ()
-      (interactive)
-      (setq-local shr-put-image-function 'shr-put-image)
-      (eww-reload))
-    (defun shr-put-image-alt (spec alt &optional flags)
-      (insert alt))
-    (defun eww-mode-hook--disable-image ()
-      (setq-local shr-put-image-function 'shr-put-image-alt))
-    (add-hook 'eww-mode-hook 'eww-mode-hook--disable-image)
+(defvar eww-disable-colorize t)
+(defun shr-colorize-region--disable (orig start end fg &optional bg &rest _)
+  (unless eww-disable-colorize
+    (funcall orig start end fg)))
+(advice-add 'shr-colorize-region :around 'shr-colorize-region--disable)
+(advice-add 'eww-colorize-region :around 'shr-colorize-region--disable)
+(defun eww-disable-color ()
+  "Disable text color of the eww buffer."
+  (interactive)
+  (setq-local eww-disable-colorize t)
+  (eww-reload))
+(defun eww-enable-color ()
+  "Enable text color of the eww buffer."
+  (setq-local eww-disable-colorize nil)
+  (eww-reload))
 
-    (setq eww-search-prefix "https://www.google.co.jp/search?q=")))
+(defun eww-disable-images ()
+  "To show images in the eww buffer."
+  (interactive)
+  (setq-local shr-put-image-function 'shr-put-image-alt)
+  (eww-reload))
+(defun eww-enable-images ()
+  "Not to show images in the eww buffer."
+  (interactive)
+  (setq-local shr-put-image-function 'shr-put-image)
+  (eww-reload))
+
+(defun shr-put-image-alt (spec alt &optional flags)
+  (insert alt))
+(defun eww-mode-hook--disable-image ()
+  (setq-local shr-put-image-function 'shr-put-image-alt))
+(add-hook 'eww-mode-hook 'eww-mode-hook--disable-image)
+
+(setq-default eww-search-prefix "https://www.google.co.jp/search?q=")
+;;; eww-conf.el ends here
