@@ -7,12 +7,9 @@
 (require 'nnimap)
 (require 'smtpmail)
 
-(package-install 'bbdb)
-(require 'bbdb)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;MEMO;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Format of `smtp-accounts'
+;; Format of `user-smtp-accounts'
 ;; (`protocol' `e-mail' `server' `port')
 ;;
 ;; User defined key (Actually, I want to use BBDB ...)
@@ -84,14 +81,17 @@
 (advice-add #'message-send :around #'message-send-around)
 
 ;; address settings
-(setq-default bbdb/news-auto-create-p t)
-(bbdb-mail-aliases)
-(bbdb-initialize 'gnus 'message 'aliases)
-(add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
-(add-hook 'message-setup-hook 'bbdb-insinuate-message)
-(setq-default bbdb/news-auto-create-p 'bbdb-ignore-most-messages-hook)
-(setq-default bbdb-send-mail-style 'compose-mail)
-(setq-default bbdb-always-add-addresses t)
-(setq-default bbdb-use-pop-up t)
+(use-package bbdb
+  :ensure t
+  :custom ((bbdb/news-auto-create-p t)
+           (bbdb-send-mail-style 'compose-mail)
+           (bbdb-always-add-addresses t)
+           (bbdb-use-pop-up t))
+  :init
+  (add-hook 'gnus-startup-hook 'bbdb-insinuate-gnus)
+  (add-hook 'message-setup-hook 'bbdb-insinuate-message)
+  :config
+  (bbdb-mail-aliases)
+  (bbdb-initialize 'gnus 'message 'aliases))
 
 ;;; gnus-conf.el ends here

@@ -43,14 +43,14 @@
  '(desktop-restore-frames nil)
  '(desktop-save t)
  '(package-selected-packages
-   '(ggtags company-quickhelp company flycheck company-lsp lsp-ui lsp-mode company-flx magit tuareg org-caldav alert web-mode twittering-mode paredit bbdb))
+   '(use-package twittering-mode company-irony ggtags company-quickhelp company flycheck company-lsp lsp-ui lsp-mode company-flx magit tuareg alert web-mode paredit bbdb))
  '(verilog-align-ifelse t)
  '(verilog-auto-arg-format 'single)
  '(verilog-auto-arg-sort t)
  '(verilog-auto-delete-trailing-whitespace t)
  '(verilog-auto-inst-param-value t)
  '(verilog-auto-inst-vector nil)
- '(verilog-auto-lineup 'all)
+ '(verilog-auto-lineup 'declarations)
  '(verilog-auto-newline nil)
  '(verilog-auto-save-policy nil)
  '(verilog-auto-template-warn-unused t)
@@ -131,10 +131,6 @@
 (add-to-list 'auto-mode-alist '("\\.cl?\\'" . c++-mode))
 (add-to-list 'auto-mode-alist '("\\.td?\\'" . c++-mode))
 
-;; web-mode
-(add-to-list 'auto-mode-alist '("\\.js?\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.ts?\\'" . web-mode))
-
 ;; tab & indent
 (setq-default tab-width 2 indent-tabs-mode nil)
 (add-hook 'c-mode-hook (lambda () (setq-default c-basic-offset tab-width)))
@@ -148,86 +144,92 @@
   (princ (format "toggle to %d" tab-width)))
 
 ;; gtags
-(package-install 'ggtags)
-(require 'ggtags)
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (when (derived-mode-p 'c-mode 'c++-mode)
-              (ggtags-mode 1))))
+(use-package ggtags
+  :defer t
+  :ensure t
+  :config
+  (add-hook 'c-mode-common-hook
+            (lambda ()
+              (when (derived-mode-p 'c-mode 'c++-mode)
+                (ggtags-mode 1)))))
 
 ;; twittering-mode
-(require 'epg)
-(package-install 'twittering-mode)
-(require 'twittering-mode)
-(setq twittering-icon-mode t)
-(setq twittering-use-master-password t) ; need GnuPG
-(setq twittering-connection-type-order '(wget curl))
-
-(setq twittering-connection-type-table
-  '((wget
-     (check . twittering-start-http-session-wget-p)
-     (https . t)
-     (send-http-request . twittering-send-http-request-wget)
-     (pre-process-buffer . twittering-pre-process-buffer-wget))
-    (curl
-     (check . twittering-start-http-session-curl-p)
-     (https . twittering-start-http-session-curl-https-p)
-     (send-http-request . twittering-send-http-request-curl)
-     (pre-process-buffer . twittering-pre-process-buffer-curl))))
-
-(setq twittering-allow-insecure-server-cert t)
-(setq twittering-cert-file nil)
-(setq twittering-status-format "%i《%S(%s)》 %@\n『%t』")
+(use-package twittering-mode
+  :after epg
+  :disabled t
+  :commands twittering-mode
+  :config
+  (setq twittering-icon-mode t)
+  (setq twittering-use-master-password t) ; need GnuPG
+  (setq twittering-connection-type-order '(wget curl))
+  (setq twittering-connection-type-table
+        '((wget
+           (check . twittering-start-http-session-wget-p)
+           (https . t)
+           (send-http-request . twittering-send-http-request-wget)
+           (pre-process-buffer . twittering-pre-process-buffer-wget))
+          (curl
+           (check . twittering-start-http-session-curl-p)
+           (https . twittering-start-http-session-curl-https-p)
+           (send-http-request . twittering-send-http-request-curl)
+           (pre-process-buffer . twittering-pre-process-buffer-curl))))
+  (setq twittering-allow-insecure-server-cert t)
+  (setq twittering-cert-file nil)
+  (setq twittering-status-format "%i《%S(%s)》 %@\n『%t』"))
 
 ;; paraedit
-(package-install 'paredit)
-(require 'paredit)
-(add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
-(add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
-(add-hook 'lisp-mode-hook 'enable-paredit-mode)
-(add-hook 'ielm-mode-hook 'enable-paredit-mode)
+(use-package paredit
+  :ensure t
+  :init
+  (add-hook 'emacs-lisp-mode-hook 'enable-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook 'enable-paredit-mode)
+  (add-hook 'lisp-mode-hook 'enable-paredit-mode)
+  ;; interactive emacs lisp mode
+  (add-hook 'ielm-mode-hook 'enable-paredit-mode))
 
 ;; magit
-(package-install 'magit)
-(require 'magit)
-(global-set-key (kbd "C-x g") 'magit-status)
+(use-package magit
+  :ensure t
+  :bind (("C-x g" . magit-status)))
 
 ;; web-mode
-(package-install 'web-mode)
-(require 'web-mode)
-(add-hook 'web-mode-hook (lambda ()
-                           (setq web-mode-markup-indent-offset 2)
-                           (setq web-mode-code-indent-offset 2)))
-(add-to-list 'auto-mode-alist '("\\.php?\\'"  . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.css?\\'"  . web-mode))
+(use-package web-mode
+  :ensure t
+  :mode (("\\.php?\\'" . web-mode)
+         ("\\.html?\\'" . web-mode)
+         ("\\.css?\\'" . web-mode)
+         ("\\.js?\\'" . web-mode)
+         ("\\.ts?\\'" . web-mode))
+  :config
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-code-indent-offset 2))
 
 ;; alert
-(package-install 'alert)
-(require 'alert)
-(setq alert-default-style 'toaster)
-;; if there is no png file, toast notification does not worv
-(setq alert-toaster-default-icon "~/.emacs.d/emacs.png")
-
-;; configure gnus-settings which use bbdb
-(load "gnus-conf")
+(use-package alert
+  :defer t
+  :disabled t
+  :config
+  (setq alert-default-style 'toaster)
+  ;; if there is no png file, toast notification does not work
+  (setq alert-toaster-default-icon "~/.emacs.d/emacs.png"))
 
 ;; TeX spel check
 (setq-default ispell-program-name "aspell")
 
 ;; org-caldav
-(package-install 'org-caldav)
-(require 'org-caldav)
-(setq org-caldav-url  "https://example.example/remote.php/dav/calendars/user_id")
-(setq org-caldav-calendar-id "personal")
-(setq org-caldav-inbox "~/.emacs.d/cal_inbox.org")
-(setq org-caldav-files '("~/.emacs.d/cal_inbox.org"))
-(setq org-agenda-files '("~/.emacs.d/cal_inbox.org"))
-(setq org-default-priority 68) ; make default priority the lowest
-(setq org-icalendar-include-todo t
-      org-icalendar-use-deadline '(event-if-todo event-if-not-todo todo-due)
-      org-icalendar-use-scheduled '(event-if-todo event-if-not-todo todo-start)
-      org-icalendar-with-timestamps t)
+(use-package org-caldav
+  :disabled t
+  :config
+  (setq org-caldav-url  "https://example.example/remote.php/dav/calendars/user_id")
+  (setq org-caldav-calendar-id "personal")
+  (setq org-caldav-inbox "~/.emacs.d/cal_inbox.org")
+  (setq org-caldav-files '("~/.emacs.d/cal_inbox.org"))
+  (setq org-agenda-files '("~/.emacs.d/cal_inbox.org"))
+  (setq org-default-priority 68) ; make default priority the lowest
+  (setq org-icalendar-include-todo t
+        org-icalendar-use-deadline '(event-if-todo event-if-not-todo todo-due)
+        org-icalendar-use-scheduled '(event-if-todo event-if-not-todo todo-start)
+        org-icalendar-with-timestamps t))
 
 ;; latex
 (require 'org)
@@ -306,8 +308,27 @@
  ;; If there is more than one, they won't work right.
  )
 
-(require 'lsp)
-(require 'lsp-ui)
+(use-package irony
+  :commands irony-mode
+  :init
+  (add-hook 'c-mode-hook 'irony-mode)
+  (add-hook 'c++-mode-hook 'irony-mode)
+  :config
+  ;; set compile options for c/c++
+  (add-hook 'c-mode-hook
+            '(lambda ()
+               (setq irony-additional-clang-options '("-std=c11" "-Wall" "-Wextra"))))
+  (add-hook 'c++-mode-hook
+            '(lambda ()
+               (setq irony-additional-clang-options '("-std=c++17" "-Wall" "-Wextra"))))
+  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  ;; Windows環境でパフォーマンスを落とす要因を回避.
+  (when (boundp 'w32-pipe-read-delay)
+    (setq w32-pipe-read-delay 0))
+  ;; バッファサイズ設定(default:4KB -> 64KB)
+  (when (boundp 'w32-pipe-buffer-size)
+    (setq irony-server-w32-pipe-buffer-size (* 64 1024))))
+
 (use-package flycheck
   :ensure t
   :defer t
@@ -318,6 +339,12 @@
   :defer t
   :init (global-company-mode t)
   :config
+  ;; Company Irony for C++
+  (use-package company-irony
+    :ensure t
+    :after company
+    :config
+    (add-to-list 'company-backends '(company-irony-c-headers company-irony)))
   ;; Company Flx adds fuzzy matching to company, powered by the sophisticated
   ;; sorting heuristics  in =flx=
   (use-package company-flx
@@ -339,76 +366,54 @@
           company-quickhelp-max-lines nil)))
 
 (use-package lsp-mode
-  :defer t
   :ensure t
   :commands lsp
   :config
-  (setq lsp-log-io nil
-        lsp-auto-configure t
-        lsp-auto-guess-root t
-        lsp-completion-enable t
-        lsp-enable-xref t
-        lsp-enable-indentation t
-        lsp-response-timeout 10
-        lsp-restart 'auto-restart
-        lsp-keep-workspace-alive t
-        lsp-eldoc-render-all nil
-        lsp-enable-snippet nil
-        lsp-enable-folding t)
-   ;;; lsp-ui gives us the blue documentation boxes and the sidebar info
-  (use-package lsp-ui
-    :defer t
-    :ensure t
-    :after lsp
-    :commands lsp-ui-mode
-    :config
-    (setq lsp-ui-sideline-ignore-duplicate t
-          lsp-ui-sideline-delay 0.5
-          lsp-ui-sideline-show-symbol t
-          lsp-ui-sideline-show-hover t
-          lsp-ui-sideline-show-diagnostics t
-          lsp-ui-sideline-show-code-actions t
-          lsp-ui-peek-always-show t
-          lsp-ui-doc-use-childframe t)
-    :bind
-    (:map lsp-ui-mode-map
-          ([remap xref-find-definitions] . lsp-ui-peek-find-definitions)
-          ([remap xref-find-references] . lsp-ui-peek-find-references))
-    :hook
-    ((lsp-mode . lsp-ui-mode)
-     (lsp-after-open . (lambda ()
-                         (lsp-ui-sideline-enable t)
-                         (lsp-ui-imenu-enable t)
-                         (lsp-lens-mode t)
-                         (lsp-ui-peek-enable t)
-                         (lsp-ui-doc-enable t)))))
-  ;;; company lsp
-  ;; install LSP company backend for LSP-driven completion
-  (use-package company-lsp
-    :defer t
-    :ensure t
-    :after company
-    :commands company-lsp
-    :config
-    (setq company-lsp-cache-candidates t
-          company-lsp-enable-recompletion t
-          company-lsp-enable-snippet t
-          company-lsp-async t)
-    ;; avoid, as this changes it globally do it in the major mode instead (push
-    ;; 'company-lsp company-backends) better set it locally
-    :hook (lsp-after-open . (lambda()
-                              (add-to-list (make-local-variable 'company-backends)
-                                           'company-lsp)))))
-
-(use-package verilog-mode
-  :defer t
-  :config
-  (require 'lsp)
   (lsp-register-client
    (make-lsp-client :new-connection (lsp-stdio-connection '("svls"))
                     :major-modes '(verilog-mode)
-                    :priority -1
-                    ))
+                    :priority -1))
+  :custom ((lsp-auto-configure t)
+           (lsp-inhibit-message t)
+           (lsp-auto-guess-root t)
+           (lsp-completion-enable t)
+           (lsp-enable-xref t)
+           (lsp-response-timeout 10)
+           (lsp-restart 'auto-restart)
+           (lsp-keep-workspace-alive t)
+           (lsp-eldoc-render-all nil)
+           (lsp-enable-snippet nil)
+           (lsp-enable-folding t))
+  :hook (prog-major-mode . lsp-prog-major-mode-enable))
+
+(use-package lsp-ui
+  :after lsp-mode
+  :ensure t
+  :custom ((lsp-ui-sideline-ignore-duplicate t)
+           (lsp-ui-sideline-delay 0.5)
+           (lsp-ui-sideline-show-symbol t)
+           (lsp-ui-sideline-show-hover t)
+           (lsp-ui-sideline-show-diagnostics t)
+           (lsp-ui-sideline-show-code-actions t)
+           (lsp-ui-peek-always-show t)
+           (lsp-ui-doc-use-childframe t))
+  :hook (lsp-mode . lsp-ui-mode))
+
+(use-package company-lsp
+  :after (lsp-mode company)
+  :defines company-backends
+  :commands company-lsp
+  :custom ((company-lsp-cache-candidates t)
+           (company-lsp-enable-recompletion t)
+           (company-lsp-enable-snippet t)
+           (company-lsp-async t))
+  :hook (lsp-after-open . (lambda()
+                            (add-to-list (make-local-variable 'company-backends) 'company-lsp))))
+
+(use-package verilog-mode
+  :after lsp-mode
+  :ensure t
+  :commands verilog-mode
   :hook (verilog-mode . (lambda()
                           (lsp)
                           (flycheck-mode t)
