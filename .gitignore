@@ -6,6 +6,7 @@
 
 /.emacs.desktop
 /.emacs.desktop.lock
+/.lsp-session-*
 auto-save-list
 tramp
 
