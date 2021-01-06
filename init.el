@@ -342,6 +342,7 @@
   ;; Company Irony for C++
   (use-package company-irony
     :ensure t
+    :disabled t
     :after company
     :config
     (add-to-list 'company-backends '(company-irony-c-headers company-irony)))
@@ -412,12 +413,12 @@
   :ensure t
   :commands verilog-mode
   :functions (lsp-register-client make-lsp-client lsp-stdio-connection)
-  :init
+  :config
   (lsp-register-client
          (make-lsp-client :new-connection (lsp-stdio-connection '("svls"))
                           :major-modes '(verilog-mode)
                           :priority -1))
-  :hook (verilog-mottde . (lambda()
+  :hook (verilog-mode . (lambda()
                           (lsp)
                           (flycheck-mode t)
                           (add-to-list 'lsp-language-id-configuration '(verilog-mode . "verilog")))))
