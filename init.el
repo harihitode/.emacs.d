@@ -40,7 +40,7 @@
  ;; If there is more than one, they won't work right.
  '(desktop-dirname "~/.emacs.d" t)
  '(desktop-path (list "~/.emacs.d/"))
- '(desktop-restore-frames nil)
+ '(desktop-restore-frames t)
  '(desktop-save t)
  '(package-selected-packages
    '(use-package twittering-mode company-irony ggtags company-quickhelp company flycheck company-lsp lsp-ui lsp-mode company-flx magit tuareg alert web-mode paredit bbdb))
@@ -368,11 +368,6 @@
 (use-package lsp-mode
   :ensure t
   :commands lsp
-  :config
-  (lsp-register-client
-   (make-lsp-client :new-connection (lsp-stdio-connection '("svls"))
-                    :major-modes '(verilog-mode)
-                    :priority -1))
   :custom ((lsp-auto-configure t)
            (lsp-inhibit-message t)
            (lsp-auto-guess-root t)
@@ -399,7 +394,9 @@
            (lsp-ui-doc-use-childframe t))
   :hook (lsp-mode . lsp-ui-mode))
 
+;; Company Backends for Language Server Protocol
 (use-package company-lsp
+  :ensure t
   :after (lsp-mode company)
   :defines company-backends
   :commands company-lsp
@@ -414,7 +411,13 @@
   :after lsp-mode
   :ensure t
   :commands verilog-mode
-  :hook (verilog-mode . (lambda()
+  :functions (lsp-register-client make-lsp-client lsp-stdio-connection)
+  :init
+  (lsp-register-client
+         (make-lsp-client :new-connection (lsp-stdio-connection '("svls"))
+                          :major-modes '(verilog-mode)
+                          :priority -1))
+  :hook (verilog-mottde . (lambda()
                           (lsp)
                           (flycheck-mode t)
                           (add-to-list 'lsp-language-id-configuration '(verilog-mode . "verilog")))))
