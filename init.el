@@ -42,8 +42,7 @@
  '(desktop-path (list "~/.emacs.d/"))
  '(desktop-restore-frames t)
  '(desktop-save t)
- '(package-selected-packages
-   '(use-package twittering-mode company-irony ggtags company-quickhelp company flycheck company-lsp lsp-ui lsp-mode company-flx magit tuareg alert web-mode paredit bbdb))
+ '(package-selected-packages nil)
  '(verilog-align-ifelse t)
  '(verilog-auto-arg-format 'single)
  '(verilog-auto-arg-sort t)
@@ -66,8 +65,8 @@
  '(verilog-tab-to-comment nil)
  '(verilog-typedef-regexp "_t$"))
 
-;; linum
-(global-linum-mode t)
+;; line number mode
+(global-display-line-numbers-mode 1)
 
 ;; saving emacs sessions
 (desktop-save-mode 1)
@@ -308,120 +307,10 @@
  ;; If there is more than one, they won't work right.
  )
 
-(use-package irony
-  :commands irony-mode
-  :init
-  (add-hook 'c-mode-hook 'irony-mode)
-  (add-hook 'c++-mode-hook 'irony-mode)
-  :config
-  ;; set compile options for c/c++
-  (add-hook 'c-mode-hook
-            '(lambda ()
-               (setq irony-additional-clang-options '("-std=c11" "-Wall" "-Wextra"))))
-  (add-hook 'c++-mode-hook
-            '(lambda ()
-               (setq irony-additional-clang-options '("-std=c++17" "-Wall" "-Wextra"))))
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-  ;; Windows環境でパフォーマンスを落とす要因を回避.
-  (when (boundp 'w32-pipe-read-delay)
-    (setq w32-pipe-read-delay 0))
-  ;; バッファサイズ設定(default:4KB -> 64KB)
-  (when (boundp 'w32-pipe-buffer-size)
-    (setq irony-server-w32-pipe-buffer-size (* 64 1024))))
-
-(use-package flycheck
-  :ensure t
-  :defer t
-  :init (global-flycheck-mode t))
-
 (use-package company
   :ensure t
-  :defer t
-  :init (global-company-mode t)
   :config
-  ;; Company Irony for C++
-  (use-package company-irony
-    :ensure t
-    :disabled t
-    :after company
-    :config
-    (add-to-list 'company-backends '(company-irony-c-headers company-irony)))
-  ;; Company Flx adds fuzzy matching to company, powered by the sophisticated
-  ;; sorting heuristics  in =flx=
-  (use-package company-flx
-    :ensure t
-    :after company
-    :init (company-flx-mode t))
-  ;; Company Quickhelp
-  ;; When idling on a completion candidate the documentation for the
-  ;; candidate will pop up after `company-quickhelp-delay' seconds.
-  (use-package company-quickhelp
-    :after company
-    :ensure t
-    ;; :init (company-quickhelp-mode t)
-    :hook (prog-mode . (lambda ()
-                         (when (window-system)
-                           (company-quickhelp-local-mode))))
-    :config
-    (setq company-quickhelp-delay 0.2
-          company-quickhelp-max-lines nil)))
-
-(use-package lsp-mode
-  :ensure t
-  :commands lsp
-  :custom ((lsp-auto-configure t)
-           (lsp-inhibit-message t)
-           (lsp-auto-guess-root t)
-           (lsp-completion-enable t)
-           (lsp-enable-xref t)
-           (lsp-response-timeout 10)
-           (lsp-restart 'auto-restart)
-           (lsp-keep-workspace-alive t)
-           (lsp-eldoc-render-all nil)
-           (lsp-enable-snippet nil)
-           (lsp-enable-folding t))
-  :hook (prog-major-mode . lsp-prog-major-mode-enable))
-
-(use-package lsp-ui
-  :after lsp-mode
-  :ensure t
-  :custom ((lsp-ui-sideline-ignore-duplicate t)
-           (lsp-ui-sideline-delay 0.5)
-           (lsp-ui-sideline-show-symbol t)
-           (lsp-ui-sideline-show-hover t)
-           (lsp-ui-sideline-show-diagnostics t)
-           (lsp-ui-sideline-show-code-actions t)
-           (lsp-ui-peek-always-show t)
-           (lsp-ui-doc-use-childframe t))
-  :hook (lsp-mode . lsp-ui-mode))
-
-;; Company Backends for Language Server Protocol
-(use-package company-lsp
-  :ensure t
-  :after (lsp-mode company)
-  :defines company-backends
-  :commands company-lsp
-  :custom ((company-lsp-cache-candidates t)
-           (company-lsp-enable-recompletion t)
-           (company-lsp-enable-snippet t)
-           (company-lsp-async t))
-  :hook (lsp-after-open . (lambda()
-                            (add-to-list (make-local-variable 'company-backends) 'company-lsp))))
-
-(use-package verilog-mode
-  :after lsp-mode
-  :ensure t
-  :commands verilog-mode
-  :functions (lsp-register-client make-lsp-client lsp-stdio-connection)
-  :config
-  (lsp-register-client
-         (make-lsp-client :new-connection (lsp-stdio-connection '("svls"))
-                          :major-modes '(verilog-mode)
-                          :priority -1))
-  :hook (verilog-mode . (lambda()
-                          (lsp)
-                          (flycheck-mode t)
-                          (add-to-list 'lsp-language-id-configuration '(verilog-mode . "verilog")))))
+  (global-company-mode))
 
 (provide 'init)
 ;;; init.el ends here
