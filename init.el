@@ -42,7 +42,9 @@
  '(desktop-path (list "~/.emacs.d/"))
  '(desktop-restore-frames t)
  '(desktop-save t)
- '(package-selected-packages nil)
+ '(package-selected-packages
+   '(bbdb company-flx company-quickhelp flycheck ggtags lsp-ui magit
+          paredit use-package web-mode))
  '(verilog-align-ifelse t)
  '(verilog-auto-arg-format 'single)
  '(verilog-auto-arg-sort t)
@@ -307,10 +309,20 @@
  ;; If there is more than one, they won't work right.
  )
 
+(add-hook 'c-mode-common-hook
+          #'(lambda ()
+              (setq c-basic-offset 2)))
+
+(add-hook 'c-mode-common-hook #'eglot-ensure)
+(setq eglot-server-programs
+      '(((c-mode c++-mode) . ("clangd"))))
+
 (use-package company
   :ensure t
   :config
   (global-company-mode))
+
+(setq flymake-no-changes-timeout 0.2)
 
 (provide 'init)
 ;;; init.el ends here
