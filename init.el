@@ -42,9 +42,7 @@
  '(desktop-path (list "~/.emacs.d/"))
  '(desktop-restore-frames t)
  '(desktop-save t)
- '(package-selected-packages
-   '(bbdb company-flx company-quickhelp flycheck ggtags lsp-ui magit
-          paredit use-package web-mode))
+ '(package-selected-packages nil)
  '(verilog-align-ifelse t)
  '(verilog-auto-arg-format 'single)
  '(verilog-auto-arg-sort t)
@@ -314,8 +312,10 @@
               (setq c-basic-offset 2)))
 
 (add-hook 'c-mode-common-hook #'eglot-ensure)
+(add-hook 'verilog-mode-hook #'eglot-ensure)
 (setq eglot-server-programs
-      '(((c-mode c++-mode) . ("clangd"))))
+      '(((c-mode c++-mode) . ("clangd"))
+        ((verilog-mode) . ("svls"))))
 
 (use-package company
   :ensure t
